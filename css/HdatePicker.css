@@ -15,10 +15,17 @@
     font-size: 14px;
 }
 .HdatePicker_main .title{
-    width: 100%;
     text-align: center;
     font-size: 16px;
-    margin: 10px 0 0;
+    margin: 10px 0 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+}
+.HdatePicker_main .title .btn{
+    font-size: 14px;
+    color: #f39a4b;
 }
 .HdatePicker_main .topPanel{
     display: flex;
@@ -43,6 +50,7 @@
 .topPanel .pickGroup > img{
     width: 16px;
     cursor: pointer;
+    opacity: 0.4;
 }
 .pickGroup .rightIcon{
     transform: rotateY(180deg);
@@ -70,7 +78,7 @@
     align-items: center;
     flex-wrap: wrap;
     font-size: 12px;
-    color: #48576a;
+    color: #2c3642;
     justify-content: flex-start;
 }
 .date_table_body .eachDate{
@@ -78,11 +86,12 @@
     text-align: center;
     padding: 10px 0;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 .date_table_body .picked{
-    background-color: #0c7cd5;
+    background-color: #f39a4b;
     color: #fff;
 }
 .date_table_body .unable{
-    color: #ddd;
+    color: #ccc5c5;
 }
