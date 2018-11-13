@@ -3,6 +3,8 @@ function HdatePicker (config) {
     _this.year = config.year;
     _this.month = config.month;
     _this.disabledDate = config.disabledDate;
+    _this.beforeToday = config.beforeToday;
+
     $("#HdatePicker").click(function () {
         _this.initCalendar();
     })
@@ -12,6 +14,7 @@ HdatePicker.prototype = {
         var _this = this;
         $(".date_table_body").html('');
         $(".HdatePicker_cover").remove();
+        $("#HdatePicker").attr("readonly","readonly")
 
         var HCalendar = "<div class=\"HdatePicker_cover\">\n" +
             "        <div class=\"HdatePicker_main\">\n" +
@@ -56,13 +59,47 @@ HdatePicker.prototype = {
         }
         for(var j = currentFirstDate; j <= currentFinalDate; j++) {
             var CNode = "";
-            if(j == new Date().getDate() && !_this.isDisabledDate(_this.year,_this.month,j)){
-                CNode = "<div class=\"eachDate picked\">" + j + "</div>";
-            } else if (j != new Date().getDate() && !_this.isDisabledDate(_this.year,_this.month,j)) {
-                CNode = "<div class=\"eachDate\">" + j + "</div>";
-            } else if (j != new Date().getDate() && _this.isDisabledDate(_this.year,_this.month,j)){
-                CNode = "<div class=\"eachDate unable\">" + j + "</div>";
+            if(!_this.beforeToday){
+                if(_this.year < new Date().getFullYear() ||
+                    (_this.year == new Date().getFullYear() && _this.month < Number(new Date().getMonth())+1) ||
+                    (_this.year == new Date().getFullYear() && _this.month == Number(new Date().getMonth())+1 && j < new Date().getDate())
+                ){
+                    CNode = "<div class=\"eachDate unable\">" + j + "</div>";
+                } else {
+                    if(_this.disabledDate != null){
+                        if(j == new Date().getDate() && !_this.isDisabledDate(_this.year,_this.month,j)){
+                            CNode = "<div class=\"eachDate picked\">" + j + "</div>";
+                        } else if (j != new Date().getDate() && !_this.isDisabledDate(_this.year,_this.month,j)) {
+                            CNode = "<div class=\"eachDate\">" + j + "</div>";
+                        } else if (_this.isDisabledDate(_this.year,_this.month,j)){
+                            CNode = "<div class=\"eachDate unable\">" + j + "</div>";
+                        }
+                    } else {
+                        if(j == new Date().getDate()){
+                            CNode = "<div class=\"eachDate picked\">" + j + "</div>";
+                        } else if (j != new Date().getDate()) {
+                            CNode = "<div class=\"eachDate\">" + j + "</div>";
+                        }
+                    }
+                }
+            } else {
+                if(_this.disabledDate != null){
+                    if(j == new Date().getDate() && !_this.isDisabledDate(_this.year,_this.month,j)){
+                        CNode = "<div class=\"eachDate picked\">" + j + "</div>";
+                    } else if (j != new Date().getDate() && !_this.isDisabledDate(_this.year,_this.month,j)) {
+                        CNode = "<div class=\"eachDate\">" + j + "</div>";
+                    } else if (_this.isDisabledDate(_this.year,_this.month,j)){
+                        CNode = "<div class=\"eachDate unable\">" + j + "</div>";
+                    }
+                } else {
+                    if(j == new Date().getDate()){
+                        CNode = "<div class=\"eachDate picked\">" + j + "</div>";
+                    } else if (j != new Date().getDate()) {
+                        CNode = "<div class=\"eachDate\">" + j + "</div>";
+                    }
+                }
             }
+
             $(".date_table_body").append(CNode);
         }
         for(var k = nextFirstDate; k < 6*7 - (currentFirstDay-1) - (currentFinalDate-currentFirstDate); k++){
@@ -111,7 +148,7 @@ HdatePicker.prototype = {
 
         // 隐藏插件
         $(".HdatePicker_cover").click(function () {
-            $(this).hide();
+            $(".HdatePicker_cover").remove();
         })
         $(".HdatePicker_main").click(function (event) {
             event.stopPropagation();
@@ -120,6 +157,10 @@ HdatePicker.prototype = {
         // 确定事件
         $(".HdatePicker_main .confirm").click(function () {
             _this.getComfirmDate();
+        })
+        // 取消事件
+        $(".HdatePicker_main .cancel").click(function () {
+            $(".HdatePicker_cover").remove();
         })
     },
     reRender: function () {
@@ -136,12 +177,18 @@ HdatePicker.prototype = {
         $(".HdatePicker_cover").remove();
     },
     isDisabledDate: function (y,m,d) {
-        var dd = y + '-' + m + 'd';
-        if(dd.indexOf(this.disabledDate)){
-            return true
-        } else {
-            return true
+        var _this = this;
+        var dd = y+"-"+m+"-"+d;
+        var flag = false;
+        for(var i=0;i<_this.disabledDate.length;i++){
+            if(dd == _this.disabledDate[i]){
+                flag = true;
+                break;
+            } else {
+                flag = false;
+            }
         }
+        return flag;
     }
 }
 
