@@ -2,8 +2,8 @@ function HdatePicker (config) {
     var _this = this;
     _this.year = config.year;
     _this.month = config.month;
-    _this.disabledDate = config.disabledDate;
-    _this.beforeToday = config.beforeToday;
+    _this.disabledDate = config.disabledDate == undefined ? null : config.disabledDate;
+    _this.beforeToday = config.beforeToday == undefined ? true : false;
 
     $("#HdatePicker").click(function () {
         _this.initCalendar();
